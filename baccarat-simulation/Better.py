@@ -23,22 +23,24 @@ class Better:
             if self.currentGameStep - self.finalBetStep == self.trashFrequency:
                 self.money -= self.trashMoney
                 self.finalBetStep = self.currentGameStep + 1
-                return self.trashMoney
+                return self.isPlayerWinBefore, self.trashMoney
+            else:
+                return self.isPlayerWinBefore, 0
         else:
             if self.breakEvenPoint:
                 if self.strokeHistory >= 6:
                     self.money -= self.betMoney * self.newBetPortion[self.strokeHistory]
                     self.finalBetStep = self.currentGameStep + 1
-                    return self.betMoney * self.newBetPortion[self.strokeHistory]
+                    return self.isPlayerWinBefore, self.betMoney * self.newBetPortion[self.strokeHistory]
                 else:
                     self.money -= self.betMoney * self.oldBetPortion[self.strokeHistoryForNewBet]
                     self.strokeHistoryForNewBet += 1
                     self.finalBetStep = self.currentGameStep + 1
-                    return self.betMoney * self.oldBetPortion[self.strokeHistoryForNewBet]
+                    return self.isPlayerWinBefore, self.betMoney * self.oldBetPortion[self.strokeHistoryForNewBet]
             else:
                 self.money -= self.betMoney * self.oldBetPortion[self.strokeHistory]
                 self.finalBetStep = self.currentGameStep + 1
-                return self.betMoney * self.oldBetPortion[self.strokeHistory]
+                return self.isPlayerWinBefore, self.betMoney * self.oldBetPortion[self.strokeHistory]
 
     def get_info_from_game(self, isPlayerWin, reward, gameStep):
         if self.money < 0 and self.money + reward >= 0:
@@ -60,7 +62,13 @@ class Better:
                 self.strokeHistory = 1
 
     def game_end_signal(self):
-        if self.money >= 75:
+        if self.money >= self.cutMoney:
             return True
         else:
             return False
+    
+    def print_money(self):
+        print(self.money)
+        f = open("./result.txt", "a")
+        f.write(str(self.money) + "\n")
+        f.close()
