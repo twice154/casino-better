@@ -1,4 +1,4 @@
 casino-better
 =============
 
-Simple simulation of [Bacarrat & Even-odd] games.
+Simple simulation of [Baccarat & Even-odd] games.
